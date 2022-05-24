@@ -1,0 +1,340 @@
+{
+	"info": {
+		"_postman_id": "6fa10b9e-8235-4ad8-9376-c733d2542da9",
+		"name": "GitHubDemo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "Get_Single_Issues",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check status code\",function(){\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check status code ES6\",()=>{\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check status code\",()=>{\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check response status\",()=>{\r",
+									"    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check the issue URL\",function(){\r",
+									"    pm.expect(body.url,\"URL property\").to.equal(\"https://api.github.com/repos/hbahnev/SoftUni-QA-Automation-2022/issues/5\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check the issue number\",function(){\r",
+									"    pm.expect(body.number,\"Number property\").to.equal(5);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check the issue id\",function(){\r",
+									"    pm.expect(body.id,\"ID property\").to.be.greaterThan(1);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{repo}}/issues/5",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{repo}}",
+								"issues",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_All_Issues",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();\r",
+									"console.log(body[0]);\r",
+									"\r",
+									"pm.test(\"Check body length\",function() {\r",
+									"    var body = pm.response.json();\r",
+									"    pm.expect(body[0].title).to.not.be.equal(\"bla bla\");\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{repo}}/issues",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{repo}}",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "Create_Issue",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"title\",pm.variables.replaceIn(\"{{$randomFirstName}}\") )"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let body = pm.response.json();\r",
+									"let number = body.number;\r",
+									"console.log(\"BODY : \", body);\r",
+									"\r",
+									"pm.test(\"Check status code\",function(){\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check status code ES6\",()=>{\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check status code\",()=>{\r",
+									"    pm.response.to.have.status(201);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check response status\",()=>{\r",
+									"    pm.expect(pm.response.status).to.equal(\"Created\");\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check the issue URL\",function(){\r",
+									"    let url = \"https://api.github.com/repos/hbahnev/SoftUni-QA-Automation-2022/issues/\" + number;\r",
+									"    pm.expect(body.url,\"URL property\").to.equal(url);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check the issue number\",function(){\r",
+									"    pm.expect(body.number,\"Number property\").to.be.greaterThan(1);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Check the issue id\",function(){\r",
+									"    pm.expect(body.id,\"ID property\").to.be.greaterThan(1);\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{token}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "hbahnev",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"title\": \"{{title}}\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{repo}}/issues",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{repo}}",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create_Issue_With_Label",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{token}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "hbahnev",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Github issue from Postman\",\r\n    \"labels\": [\"bug\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{repo}}/issues",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{repo}}",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UPDATE",
+			"item": [
+				{
+					"name": "Update_Issue_Title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the issue id\",function(){\r",
+									"    var body = pm.response.json();\r",
+									"    pm.expect(body.title,\"Title property\").to.equal(\"updated title\");\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{token}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "hbahnev",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"owner\": \"hbahnev\",\r\n    \"repo\": \"{{repo}}\",\r\n    \"issue_number\": 5,\r\n    \"title\": \"updated title\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{repo}}/issues/5",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{repo}}",
+								"issues",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE",
+			"item": []
+		}
+	]
+}
